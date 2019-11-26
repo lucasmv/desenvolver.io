@@ -1,37 +1,42 @@
-﻿using DevIO.App.Data;
+﻿using AutoMapper;
+using DevIO.App.Configurations;
 using DevIO.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DevIO.App {
     public class Startup {
-        public Startup(IConfiguration configuration) {
-            Configuration = configuration;
-        }
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services) {
-            services.Configure<CookiePolicyOptions>(options => {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
+        public Startup(IHostingEnvironment hostEnvironment) {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(hostEnvironment.ContentRootPath)
+                .AddJsonFile("appsettings.json", true, true)
+                .AddJsonFile($"appsettings.{hostEnvironment.EnvironmentName}.json", true, true)
+                .AddEnvironmentVariables();
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            if (hostEnvironment.IsDevelopment()) {
+                builder.AddUserSecrets<Startup>();
+            }
+
+            Configuration = builder.Build();
+        }
+
+        public void ConfigureServices(IServiceCollection services) {
+
+            services.AddIdentityConfiguration(Configuration);
+
             services.AddDbContext<MeuDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddDefaultUI(UIFramework.Bootstrap4)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddAutoMapper(typeof(Startup));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvcConfiguration();
+
+            services.ResolveDependencies();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
@@ -48,6 +53,8 @@ namespace DevIO.App {
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
+            app.UseGlobalizationConfig();
 
             app.UseMvc(routes => {
                 routes.MapRoute(
