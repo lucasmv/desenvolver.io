@@ -10,16 +10,20 @@ using System.IO;
 using System.Threading.Tasks;
 
 namespace DevIO.App.Controllers {
-    public class ProdutosController : Controller {
+    public class ProdutosController : BaseController {
         private readonly IProdutoRepository _produtoRepository;
         private readonly IFornecedorRepository _fornecedorRepository;
+        private readonly IProdutoService _produtoService;
         private readonly IMapper _mapper;
 
         public ProdutosController(IProdutoRepository produtoRepository,
                                   IFornecedorRepository fornecedorRepository,
-                                  IMapper mapper) {
+                                  IProdutoService produtoService,
+                                  IMapper mapper,
+                                  INotificador notificador) : base(notificador) {
             _produtoRepository = produtoRepository;
             _fornecedorRepository = fornecedorRepository;
+            _produtoService = produtoService;
             _mapper = mapper;
         }
 
@@ -58,7 +62,9 @@ namespace DevIO.App.Controllers {
 
             produtoViewModel.Imagem = string.Concat(imgPrefixo, produtoViewModel.ImagemUpload.FileName);
 
-            await _produtoRepository.Adicionar(_mapper.Map<Produto>(produtoViewModel));
+            await _produtoService.Adicionar(_mapper.Map<Produto>(produtoViewModel));
+
+            if (!OperacaoValida()) return View(produtoViewModel);
 
             return RedirectToAction("Index");
         }
@@ -97,7 +103,9 @@ namespace DevIO.App.Controllers {
             produtoAtualizacao.Valor = produtoViewModel.Valor;
             produtoAtualizacao.Ativo = produtoViewModel.Ativo;
 
-            await _produtoRepository.Atualizar(_mapper.Map<Produto>(produtoAtualizacao));
+            await _produtoService.Atualizar(_mapper.Map<Produto>(produtoAtualizacao));
+
+            if (!OperacaoValida()) return View(produtoViewModel);
 
             return RedirectToAction("Index");
         }
@@ -119,7 +127,11 @@ namespace DevIO.App.Controllers {
 
             if (produto == null) return NotFound();
 
-            await _produtoRepository.Remover(id);
+            await _produtoService.Remover(id);
+
+            if (!OperacaoValida()) return View(produto);
+
+            TempData["Sucesso"] = "Produto excluído com sucesso!";
 
             return RedirectToAction("Index");
         }
