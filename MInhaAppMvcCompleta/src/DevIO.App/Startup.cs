@@ -44,7 +44,8 @@ namespace DevIO.App {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             } else {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/erro/500");
+                app.UseStatusCodePagesWithRedirects("/erro/{0}");
                 app.UseHsts();
             }
 

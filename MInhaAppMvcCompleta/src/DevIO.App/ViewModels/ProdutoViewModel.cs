@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DevIO.App.ViewModels {
+
     public class ProdutoViewModel {
         [Key]
         public Guid Id { get; set; }
@@ -23,6 +25,7 @@ namespace DevIO.App.ViewModels {
         [StringLength(1000, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 2)]
         public string Descricao { get; set; }
 
+        [NotMapped]
         [DisplayName("Imagem do Produto")]
         public IFormFile ImagemUpload { get; set; }
 
@@ -40,6 +43,7 @@ namespace DevIO.App.ViewModels {
 
         public FornecedorViewModel Fornecedor { get; set; }
 
+        [NotMapped]
         public IEnumerable<FornecedorViewModel> Fornecedores { get; set; }
     }
 }

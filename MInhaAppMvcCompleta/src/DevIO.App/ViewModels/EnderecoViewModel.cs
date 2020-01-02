@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DevIO.App.ViewModels {
+
     public class EnderecoViewModel {
         [Key]
         public Guid Id { get; set; }

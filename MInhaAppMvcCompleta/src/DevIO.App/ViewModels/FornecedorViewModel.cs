@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DevIO.App.ViewModels {
+
     public class FornecedorViewModel {
         [Key]
         public Guid Id { get; set; }
@@ -24,6 +26,7 @@ namespace DevIO.App.ViewModels {
         [DisplayName("Ativo?")]
         public bool Ativo { get; set; }
 
+        [NotMapped]
         public IEnumerable<ProdutoViewModel> Produtos { get; set; }
     }
 }
