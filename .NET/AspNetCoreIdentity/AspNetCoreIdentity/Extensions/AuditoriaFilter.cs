@@ -10,9 +10,7 @@ namespace AspNetCoreIdentity.Extensions {
         public AuditoriaFilter(ILogger logger) {
             _logger = logger;
         }
-
         public void OnActionExecuted(ActionExecutedContext context) { }
-
         public void OnActionExecuting(ActionExecutingContext context) {
             if (context.HttpContext.User.Identity.IsAuthenticated) {
                 var mensagem = $"{context.HttpContext.User.Identity.Name} acessou: {context.HttpContext.Request.GetDisplayUrl()}";
