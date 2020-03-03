@@ -1,11 +1,8 @@
 ﻿using System;
 
-namespace DesignPatterns.FactoryMethod
-{
-    public class ExecucaoFactoryMethod
-    {
-        public static void Executar()
-        {
+namespace DesignPatterns.FactoryMethod {
+    public class ExecucaoFactoryMethod {
+        public static void Executar() {
             var sqlCn = DbFactory.Database(DataBase.SqlServer)
                                  .CreateConnector("minhaCS")
                                  .Connect();

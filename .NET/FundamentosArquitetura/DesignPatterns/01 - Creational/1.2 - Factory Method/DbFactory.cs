@@ -1,18 +1,15 @@
 ﻿using System;
 
-namespace DesignPatterns.FactoryMethod
-{
+namespace DesignPatterns.FactoryMethod {
     // Abstract Creator
-    public abstract class DbFactory
-    {
+    public abstract class DbFactory {
         // Factory Method
         public abstract DbConnector CreateConnector(string connectionString);
 
-        public static DbFactory Database(DataBase dataBase)
-        {
-            if(dataBase == DataBase.SqlServer)
+        public static DbFactory Database(DataBase dataBase) {
+            if (dataBase == DataBase.SqlServer)
                 return new SqlFactory();
-            if(dataBase == DataBase.Oracle)
+            if (dataBase == DataBase.Oracle)
                 return new OracleFactory();
 
             throw new ApplicationException("Banco de dados não reconhecido.");
